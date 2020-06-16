@@ -1,4 +1,17 @@
-##WebDav\Server##
+#NextCloudWebDavSdk#
+Обертка на классы WebDav и Share
+
+$sdk = new \NextCloudWebDavSdk\NextCloudWebDavSdk(
+    'http://192.168.0.1',
+    'login',
+    'pass'
+);
+$response = $sdk->webDav->getListingFolder();
+$response = $sdk->share->createShare();
+
+Все методы классов расписаны ниже.
+
+##WebDav##
 
 Документация по работе с WebDav
 https://docs.nextcloud.com/server/latest/developer_manual/client_apis/WebDAV/index.html
@@ -29,6 +42,8 @@ $response = $webDav->uploadFile(
 );
     
     
+    
+
 ###Создать папку###
 $response = $webDav->createFolder(
     '/path/to/new/folder/',
@@ -51,8 +66,7 @@ $response = $webDav->copyFileOrDirectory(
     '/path/file/to/destination'
 );
 
-
-##OCS\Share##
+##Share##
 
 Документация по шарингу 
 https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/ocs-share-api.html
