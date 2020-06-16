@@ -2,6 +2,8 @@
   "name": "satana.konst/next-cloud-web-dav-sdk",
   "description": "Sdk for NextCloud WebDav Api",
   "type": "library",
+  "version": "0.1",
+  "minimum-stability": "dev",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
@@ -14,6 +16,8 @@
     "sabre/dav": "~3.2.0"
   },
   "autoload": {
-    "classmap": ["src"]
+    "psr-4": {
+      "NextCloudWebDavSdk": "src"
+    }
   }
 }
