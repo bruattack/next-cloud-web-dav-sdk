@@ -5,7 +5,7 @@ namespace NextCloudWebDavSdk;
 
 class NextCloudWebDavSdk
 {
-    public $server;
+    public $webDav;
     public $share;
 
     /**
@@ -20,7 +20,7 @@ class NextCloudWebDavSdk
         $this->login = $login;
         $this->pass = $pass;
 
-        $this->server = new WebDav($host,$login,$pass);
+        $this->webDav = new WebDav($host,$login,$pass);
         $this->share = new Share($host,$login,$pass);
     }
 
