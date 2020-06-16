@@ -1,7 +1,7 @@
 {
   "name": "satana.konst/next-cloud-web-dav-sdk",
   "description": "Sdk for NextCloud WebDav Api",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "konstantin",
@@ -9,7 +9,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0.*",
+    "php": "~7.0.0",
     "sabre/dav": "~3.2.0"
   },
   "require-dev": {
