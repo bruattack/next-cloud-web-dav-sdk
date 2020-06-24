@@ -1,5 +1,7 @@
 #NextCloudWebDavSdk#
-Обертка на классы WebDav и Share
+This is a simple wrapper around sabre/dav (https://sabre.io/) sepcifically for the interaction with the Nextcloud APIs (WebDAV and Share).
+
+It is a fork of https://github.com/SatanaKonst/next-cloud-web-dav-sdk
 
 $sdk = new \NextCloudWebDavSdk\NextCloudWebDavSdk(
     'http://192.168.0.1',
@@ -9,33 +11,33 @@ $sdk = new \NextCloudWebDavSdk\NextCloudWebDavSdk(
 $response = $sdk->webDav->getListingFolder();
 $response = $sdk->share->createShare();
 
-Все методы классов расписаны ниже.
+All class methods are listed below.
 
 ##WebDav##
 
-Документация по работе с WebDav
+Nextcloud WebDAV API docs:
 https://docs.nextcloud.com/server/latest/developer_manual/client_apis/WebDAV/index.html
 
-###Авторизация###
+###Authorization###
 $webDav = new \NextCloudWebDavSdk\WebDav\Server(
     'host',
     'login',
     'pass'
 );
 
-###Получить список файлов###
+###List files in a folder###
 $response = $webDav->getListingFolder(
     '/path/to/file'
 );
 
-###Скачать файл###
+###СFile download###
 $response = $webDav->downloadFile(
     '/path/to/download/file',
     'path/to/save/file'
 );
 
 
-###Загрузка файлов###
+###File upload###
 $response = $webDav->uploadFile(
     'path/to/upload/file/test_upload_pdf.pdf',
     '/path/for/save/file/'
@@ -44,23 +46,23 @@ $response = $webDav->uploadFile(
     
     
 
-###Создать папку###
+###Create a folder###
 $response = $webDav->createFolder(
     '/path/to/new/folder/',
 );
 
-###Удалить файл или директорию###
+###Delete files/folders###
 $response = $webDav->removeFileOrDirectory(
     '/path/to/file/or/directory',
 );
 
-###Переместить файл или дирректорию###
+###Move files/folders###
 $response = $webDav->moveFileOrDirectory(
     '/path/file/to/move',
     '/path/file/to/destination'
 );
 
-###Копировать файл или директорию###
+###Copy files/folders###
 $response = $webDav->copyFileOrDirectory(
     '/path/file/to/copy',
     '/path/file/to/destination'
@@ -68,33 +70,33 @@ $response = $webDav->copyFileOrDirectory(
 
 ##Share##
 
-Документация по шарингу 
+Nextcloud Share/OCS API docs:
 https://docs.nextcloud.com/server/latest/developer_manual/client_apis/OCS/ocs-share-api.html
 
-###Авторизация###
+###Authorization###
 $share = new \NextCloudWebDavSdk\OCS\Share(
     'host',
     'login',
     'pass'
 );
 
-###Расшарить файл###
+###Create a share###
 $response = $share->createShare(
     'path/to/share/file'
 );
 
-###Удалить шару###
+###Remove a share###
 $response = $share->removeShare(
     'shareID'
 );
 
 
-###Получить шару###
+###List shares###
 $response = $share->getShares(
      'path/to/share/file'
 );
 
-###Обновить шару###
+###Update a share###
 $response = $share->updateShare(
     'shareID'
 );

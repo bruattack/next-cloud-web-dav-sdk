@@ -1,12 +1,11 @@
 {
-  "name": "satana.konst/next-cloud-web-dav-sdk",
+  "name": "bruattack/next-cloud-web-dav-sdk",
   "description": "Sdk for NextCloud WebDav Api",
   "type": "library",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
-      "name": "konstantin",
-      "email": "Satana.Konst@gmail.com"
+      "name": "Lorenz Breu"
     }
   ],
   "require": {

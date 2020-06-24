@@ -16,6 +16,7 @@ class WebDav
     public function __construct($host, $login, $pass)
     {
         $this->baseUrl = "$host/remote.php/dav/files/$login/";
+        $this->uploadUrl = "$host/remote.php/dav/uploads/$login/";
         $this->client = new Client(array(
             'baseUri' => $this->baseUrl,
             'userName' => $login,
@@ -252,6 +253,123 @@ class WebDav
         }
 
         return true;
+    }
+
+    /**
+     *  Creates a random folder in $host/remote.php/dav/uploads/$login to be used for chunked upload.
+     *
+     * @return string The name of a random directory in the /uploads structure
+     * @throws \Exception
+     */
+    public function createFolderForChunkedUpload()
+    {
+        
+        $exists = true;
+        $chunkdir = $this->randomString(20);
+        while ($exists) {            
+            try {
+                $this->getListingFolder( $this->uploadUrl . $chunkdir );
+                $chunkdir = $this->randomString(20);
+            } catch (\Exception $e) {
+                if ($e->getCode() === 404) {
+                    $exists = false;
+                    $response = $this->client->request('MKCOL', $this->uploadUrl . $chunkdir);
+                    if ($response['statusCode'] != 201) {
+                        throw new \Exception('Error create folder.' . $response['body']);
+                    }
+                }
+            }
+        }
+        
+        return $chunkdir;
+    }
+
+    /**
+     * Upload a chunk of a file. The files get sorted alphabetically before merge, so be sure to name your chunks accordingly.
+     *
+     * @param      string      $chunkFile  The chunk to be uploaded (as a local file)
+     * @param      string      $uploadPath  The upload path consisting of the directory created using createFolderForChunkedUpload and the chunk filename
+     *
+     * @throws     \Exception 
+     *
+     * @return     boolean     true if it worked, else it will throw an Exception.
+     */
+    public function uploadFileChunked($chunkFile, $uploadPath)
+    {
+        if (empty($chunkFile)) {
+            throw new \Exception('Empty upload file');
+        }
+
+        if (empty($uploadPath)) {
+            throw new \Exception('Empty upload path');
+        }
+
+        $url = $this->uploadUrl . $uploadPath;
+
+        $uploadFile = file_get_contents($chunkFile);
+
+        $response = $this->client->request('PUT', $url, $uploadFile);
+
+        if ($response['statusCode'] != 201) {
+            throw new \Exception('Error upload file.' . $response['body']);
+        }
+        return true;
+    }
+
+    /**
+     * Merge previsouly uploaded chunks back into a file
+     *
+     * @param      string     $chunkdir     The location of the chunks (directory created using createFolderForChunkedUpload)
+     * @param      string     $destination  The destination (relative from $host/remote.php/dav/files/$login/)
+     *
+     * @throws     \Exception 
+     *
+     * @return     boolean      true if it worked, else it will throw an Exception.
+     */
+    public function mergeChunkedFile($chunkdir, $destination)
+    {
+        
+        if (empty($chunkdir)) {
+            throw new \Exception('Empty chunk path');
+        }
+        if (empty($destination)) {
+            throw new \Exception('Empty destination path');
+        }
+
+        $movePath = $this->uploadUrl . $chunkdir . '/.file';
+        $destinationPath = $this->baseUrl . $destination;
+
+        $response = $this->client->request(
+            'MOVE',
+            $movePath,
+            null,
+            array(
+                'Destination' => $destinationPath
+            ));
+
+        if ($response['statusCode'] != 201) {
+            throw new \Exception('Error move file or directory.' . $response['body']);
+        }
+
+        return true;
+    }
+
+    /**
+     * Create a random string using 0-9 and a-z
+     *
+     * @param      integer  $length  The length of the resulting string
+     *
+     * @return     string   random(ish) string
+     */
+    protected function randomString($length) {
+        $key = '';
+        $keys = array_merge(range(0, 9), range('a', 'z'));
+
+        for ($i = 0; $i < $length; $i++) {
+            $key .= $keys[array_rand($keys)];
+        }
+
+        return $key;
     }
 
 }
